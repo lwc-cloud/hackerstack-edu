@@ -3,6 +3,40 @@
 var remote = 'http://127.0.0.1:5555';
 //var remote = 'https://api.hackerstack.top'
 
+function LoadJsonToUI(jsonString, domObject) {
+    // 将JSON字符串解析成对象
+    var jsonObject = JSON.parse(jsonString);
+  
+    // 创建一个表格元素
+    var table = document.createElement('table');
+    table.setAttribute('border', '1'); // 设置边框，可根据需要调整样式
+    table.setAttribute('width', '100%'); // 设置表格宽度
+  
+    // 假设jsonObject是一个数组，其中每个元素都是一个对象
+    // 遍历数组，创建表头
+    var headerRow = document.createElement('tr');
+    for (var key in jsonObject[0]) {
+      var th = document.createElement('th');
+      th.textContent = key;
+      headerRow.appendChild(th);
+    }
+    table.appendChild(headerRow);
+  
+    // 遍历数组，创建数据行
+    for (var key in jsonObject) {
+          var tr = document.createElement('tr');
+          for (var key2 in jsonObject[key]) {
+            var td = document.createElement('td');
+            td.textContent = jsonObject[key][key2];
+            tr.appendChild(td);
+          }
+          table.appendChild(tr);
+    }
+  
+    // 将创建的表格添加到DOM对象中
+    domObject.appendChild(table);
+  }
+
 // 设置cookie
 function setCookie(name, value, days) {
     var expires = "";
@@ -354,8 +388,6 @@ function to_VirusInfoGetter() {
 }
 
 function VirusInfoGetter() {
-    var user = JSON.parse(document.cookie).user;
-    var pwd = JSON.parse(document.cookie).pwd;
     var xhr = new XMLHttpRequest();
     xhr.open("GET",remote+"/api/VirusInfoGetter/"+user+"/"+pwd+"/",true);
     xhr.send();
@@ -395,19 +427,13 @@ function to_whois() {
 function load_whois_info() {
     var website = document.getElementById('website').value;
     
-    if (website == 'www.ac123ff.com') {
-        setTimeout(function() {
-            showAlert(JSON.stringify(game_website_info['whois']) , null)
-        } , 4000)
-        return
-    } else {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET' , remote+"/whois/"+website+"/" , true);
-        xhr.send();
-        xhr.onload = function() {
-            var text = xhr.responseText;
-            showAlert('收到信息:<br />' + text , null);        
-        }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST' , remote+"/whois/" , true);
+    xhr.send(JSON.stringify({"website":website}));
+    xhr.onload = function() {
+        var text = xhr.responseText;
+        var console = document.getElementById('console');
+        console.innerHTML = text.replaceAll('\n' , '<br />');
     }
 }
 
