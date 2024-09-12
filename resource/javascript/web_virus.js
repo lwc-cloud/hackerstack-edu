@@ -46,7 +46,7 @@ function getLocation() {
 }
 function getIP() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET","https://api.hackerstack.top/get_my_ip/",false)
+    xhr.open("GET","https://api.hackerstack.top/get_my_ip",false)
     xhr.send();
     return xhr.responseText.replace("\n","")
 }
@@ -125,7 +125,7 @@ function exec(command) {
         }
         else if (command === 'get_ip') {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET","https://api.ipify.org/",true)
+            xhr.open("GET","https://api.hackerstack.top/get_my_ip",true)
             xhr.send();
             xhr.onload = function (e) {
                 if (xhr.readyState === 4) {
