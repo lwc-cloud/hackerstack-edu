@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <title>病毒库</title>
+        <link rel="stylesheet" type="text/css" href="./css/main.css">
+        <link rel="stylesheet" type="text/css" href="./css/index.css">
+        <style>
+              body {
+    font-family: 'Arial', sans-serif;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .header {
+    background: url('header-background.jpg') no-repeat center center;
+    background-size: cover;
+    text-align: center;
+    padding: 100px 0;
+  }
+
+  .header h1 {
+    font-size: 3em;
+    margin-bottom: 0;
+  }
+
+  .header p {
+    font-size: 1.5em;
+    margin-top: 10px;
+  }
+
+  .navbar {
+    background-color: #0000005d;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+  }
+
+  .navbar a {
+    float: left;
+    display: block;
+    color: #00FF00;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  .navbar a:hover {
+    background-color: #00FF00;
+    color: black;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .footer {
+    background-color: #22222200;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /* 动画效果 */
+  .animated {
+    animation-duration: 2s;
+    animation-fill-mode: both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .fadeIn {
+    animation-name: fadeIn;
+  }
+  .main-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 居中子元素 */
+}
+
+.main-content .div-button {
+  display: inline-block;
+  width: 300px;
+  height: 200px;
+  margin: 10px;
+  padding: 20px;
+  background-color: #000000bb;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  color: white;
+  text-shadow: 0px 0px 5px #00FF00;
+  font-weight: bold;
+  border-radius: 15px;
+  transition: transform 0.3s ease; /* 可选，添加鼠标悬停效果 */
+}
+
+.main-content .div-button:hover {
+  transform: translateY(-5px); /* 可选，鼠标悬停时向上移动 */
+}
+
+.content_2 {
+  width: 200px;
+  color: #00FF00;
+  background-color: black;
+  border: none;
+  margin-top: 20px;
+    border: 1px solid #00FF00;
+}
+
+.content_2:hover {
+  background-color: #222;
+  color: #00FF00;
+  box-shadow: 0px 0px 5px #00FF00;
+}
+.icon {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+}
+
+.b {
+  margin-bottom: 40px;
+  width: calc(200px);
+  height: 60px;
+  background-color: #222;
+  border: 1px solid #00FF00;
+  color: #00FF00;
+}
+
+.v_btn {
+    width: 100px;
+    height: 50px;
+    border: none;
+    background-color: #1a1a1a;
+    color: white;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.v_btn:hover {
+    background-color: #222;
+    color: #00FF00;
+}
+
+        </style>
+        <script src="./js/libui.js"></script>
+        <script src="./js/update_virus.js"></script>
+        <script src="./js/virus_show.js"></script>
+    </head>
+    <body style="margin: 0px;padding: 0px;">
+        <iframe src="./bg.html" style="width: 100%;height: 100%;position: absolute;bottom: 0px;top: 0px;border: none;"></iframe>
+        <div style="position: absolute;top: 0;bottom: 0;width: 100%;overflow-y: scroll;overflow-x: hidden;">
+          <div class="navbar" id="top">
+            <a href="./index.html">首页</a>
+            <a href="https://gitee.com/LinWin-Cloud/hacker-stack/wikis/LinwinSoft%20HackerStack%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE">平台协议</a>
+          </div>  
+          <div align="center">
+            <div style="padding: 10px;backdrop-filter: blur(5px);border-radius: 10px;max-width: 1000px;margin-top: 50px;height: 80vh;background-color: rgba(0, 0, 0, 0.562);">
+                <button class="v_btn" onclick="load_virus_list()">刷新</button>
+                <button class="v_btn" id="update">上传病毒</button>
+                <input type="file" id="update_file" />
+                <br />
+                <br />
+                <div style="width: 280px;">
+                    <div style="float: left;padding: 0px;margin:0px">
+                        <input id="check" style="width: 180px;border: 1px solid green;height: 40px;outline: none;background-color: black;color: green;" /> 
+                    </div>
+                    <div style="float: right;padding: 0px;">
+                        <img id="check_img" src="https://user.hackerstack.top/get_check_code" style="padding: 0px;margin: 0px;" />
+                    </div>
+                </div>
+                <div style="width: 100%;height: calc(100% - 100px);overflow-y: scroll;" id="virus_show">
+
+                </div>
+            </div>
+          </div>
+    </body>
+</html>

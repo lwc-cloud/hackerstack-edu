@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="../../js/libui.js"></script>
+        <script src="../../js/system.js"></script>
+        <style>
+            button {
+    width: 100%;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.555);
+    border: 2px solid #00FF00;
+    color: #00FF00;
+    margin-top: 10px;
+    text-align: left;
+}
+    p {
+        color: #00FF00;
+    }
+
+button:hover {
+    background-color: #00FF00;
+    color:black;
+}
+        </style>
+    </head>
+    <body style="padding: 50px;background-color: rgba(0, 0, 0, 0);" id="body">
+        <h2 style="color: #00FF00;">社会工程学攻击</h2>
+        <button onclick="social_attack('QQ')">QQ登录模版</button>
+        <button onclick="social_attack('WeChat')">微信登录模版</button>
+        <button onclick="social_attack('163')">163邮箱登录模版</button>
+        <button onclick="social_attack('Microsoft')">微软账户登录模版</button>
+        <button onclick="social_attack('Alipay')">支付宝登录模版</button>
+        <button onclick="social_attack('Google')">谷歌登录模版登录模版</button>
+        <button onclick="social_attack('Baidu')">百度账户登录模版</button>
+        <button onclick="social_attack('MiHaYou')">原神账户社工模板</button>
+        <p>
+            描述:<br />
+            利用各个平台的登录模版，来钓鱼获取个人信息
+        </p>
+    </body>
+</html>

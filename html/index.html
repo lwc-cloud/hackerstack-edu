@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="./js/cookie.js"></script>
+<script src="./js/libui.js"></script>
+<script src="./js/main.js"></script>
+<script src="./js/system.js"></script>
+<script src="./js/login.js"></script>
+<link href="./img/logo.png" rel="icon" />
+<meta name="description" content="Hacker Killer - 在线渗透测试与信安平台：在线信息安全渗透与装逼">
+<meta name="keywords" content="Linux,信息安全,装逼,渗透测试">
+<title>Hacker Killer - 在线渗透测试与信安平台</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #333;
+    color: #fff;
+  }
+
+  .header {
+    background: url('header-background.jpg') no-repeat center center;
+    background-size: cover;
+    text-align: center;
+    padding: 100px 0;
+  }
+
+  .header h1 {
+    font-size: 3em;
+    margin-bottom: 0;
+  }
+
+  .header p {
+    font-size: 1.5em;
+    margin-top: 10px;
+  }
+
+  .navbar {
+    background-color: #0000005d;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+  }
+
+  .navbar a {
+    float: left;
+    display: block;
+    color: #00FF00;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+
+  .navbar a:hover {
+    background-color: #00FF00;
+    color: black;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  .footer {
+    background-color: #22222200;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /* 动画效果 */
+  .animated {
+    animation-duration: 2s;
+    animation-fill-mode: both;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .fadeIn {
+    animation-name: fadeIn;
+  }
+  .main-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* 居中子元素 */
+}
+
+.main-content .div-button {
+  display: inline-block;
+  width: 300px;
+  height: 200px;
+  margin: 10px;
+  padding: 20px;
+  background-color: #000000bb;
+  text-align: center;
+  backdrop-filter: blur(5px);
+  color: white;
+  text-shadow: 0px 0px 5px #00FF00;
+  font-weight: bold;
+  border-radius: 15px;
+  transition: transform 0.3s ease; /* 可选，添加鼠标悬停效果 */
+}
+
+.main-content .div-button:hover {
+  transform: translateY(-5px); /* 可选，鼠标悬停时向上移动 */
+}
+
+.content_2 {
+  width: 200px;
+  color: #00FF00;
+  background-color: black;
+  border: none;
+  margin-top: 20px;
+    border: 1px solid #00FF00;
+}
+
+.content_2:hover {
+  background-color: #222;
+  color: #00FF00;
+  box-shadow: 0px 0px 5px #00FF00;
+}
+.icon {
+  width: 50px;
+  height: 50px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 15px;
+}
+
+.b {
+  margin-bottom: 40px;
+  width: calc(200px);
+  height: 60px;
+  background-color: #222;
+  border: 1px solid #00FF00;
+  color: #00FF00;
+}
+
+</style>
+<script src="./js/cookie.js"></script>
+</head>
+<body style="overflow-x: hidden;">
+    <script>
+        function to_system_window() {
+          window.location.href='./system/'
+        }
+        function to_system() {
+            login_ok(to_system_window , showAlert);
+        }
+        
+    </script>
+    <iframe src="./bg.html" style="width: 100%;height: 100%;position: absolute;bottom: 0px;top: 0px;border: none;"></iframe>
+<div style="position: absolute;top: 0;bottom: 0;width: 100%;overflow-y: scroll;overflow-x: hidden;">
+  <div class="navbar" id="top">
+    <a href="">首页</a>
+    <a id="login" onclick="window.location.href='./login.html'">登录/注册</a>
+    <a href="./buy/index.html">购买订阅</a>
+    <a href="https://gitee.com/LinWin-Cloud/hacker-stack/wikis/LinwinSoft%20HackerStack%E8%BD%AF%E4%BB%B6%E4%BD%BF%E7%94%A8%E5%8D%8F%E8%AE%AE">平台协议</a>
+  </div>  
+  <div class="header fadeIn" align="center">
+        <h1 style="text-shadow: 0px 0px 10px #00FF00;">Hacker Stack教育版</h1>
+        <a style="text-shadow: 0px 0px 10px #00FF00;">你买的不是课程，而是真的黑客软件</a>
+      </div>
+      <div align="center">
+        <div id="t" style="max-width: 500px;height: 100px;"></div>
+      </div>
+      <div align="center">
+        <script>
+          function to_matrix() {
+            function to_h() {
+              window.location.href = './system/?from=game'
+            }
+            login_ok(to_h , showAlert)
+          }
+          function to_ai() {
+            function to_h() {
+              window.location.href = './ai.html'
+            }
+            login_ok(to_h , showAlert)
+          }
+        </script>
+      </div>
+
+      <div align="center">
+        <div class="main-content" style="max-width: 1200px;" align="center">
+          <!-- 主要内容 -->
+          <br /><br />
+          <div style="width: 100%;height: 30px;"></div>
+          <div align="center" class="div-button" onclick="to_system()">
+            <h3>渗透测试控制台(教育版)</h3>
+            <p>包括了多种在线渗透测试工具，<br />全部可视化操作，非常简单</p>
+          </div>
+          <div align="center" class="div-button" onclick="window.location.href='./img/5602d880826fda0d7c93529b79dc3ec8.jpg'">
+            <h3>捐助</h3>
+            <p>捐助我们团队，因为做一个这么<br />的产品并不容易，谢谢</p>
+          </div>
+          <div align="center" class="div-button" onclick="window.location.href='./virus.html'">
+            <h3>病毒库</h3>
+            <p>允许下载和上传木马病毒<br />也可以使用该木马病毒库</p>
+          </div>
+          <div align="center" class="div-button" onclick="window.location.href='./edu/edu.pdf'">
+            <h3>抽象的兴趣导向教材</h3>
+            <p>我们的网安学校教材以抽象著称<br />完全摈弃传统学习</p>
+          </div>
+          <div align="center" class="div-button" onclick="window.location.href='./img/5602d880826fda0d7c93529b79dc3ec8.jpg'">
+            <h3>网站驱动程序下载</h3>
+            <p>可以执行更多更加离谱的黑客功能<br />适用于Windows,Linux</p>
+          </div>
+          <div align="center" class="div-button" onclick="window.location.href='./buy'">
+            <h3>订阅价格</h3>
+            <p>提供长达一小时的免费试用权限<br />过期之后需要另外的购买</p>
+          </div>
+          <br />
+          <br />
+          <br />
+          <br />
+                    <div style="margin-top: 20px;width: 100%;border-radius: 15px;" class="footer" >
+            <p>&copy; 2023 Hacker Killer. All rights reserved.</p>
+          </div>
+      </div>  
+      </div>
+</div>
+</body>
+</html>
