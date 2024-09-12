@@ -1,7 +1,7 @@
 
 
-var remote = 'http://127.0.0.1:5555';
-//var remote = 'https://api.hackerstack.top'
+//var remote = 'http://127.0.0.1:5555';
+var remote = 'https://api.hackerstack.top'
 
 function LoadJsonToUI(jsonString, domObject) {
     // 将JSON字符串解析成对象
