@@ -15,7 +15,7 @@ import qrcode
 import json
 import whois
 from zhipuai import ZhipuAI
-import yagmail
+from flask_limiter.util import get_remote_address
 
 
 
@@ -32,6 +32,7 @@ import the_matrix as matrix
 app = Flask(__name__)
 CORS(app)
 
+
 user_server = 'https://user.hackerstack.top'
 mail_server = 'https://send.linwinsoft.top'
 url_list = {}
@@ -41,6 +42,23 @@ ip_proxy = {}
 client = ZhipuAI(api_key="b8487357fcb60284daa628fd8746d8b1.0wahvm5rmBqfFJzq") 
 
 
+
+
+def get_remote_address():
+    # 当存在X-Forwarded-For时，使用它来获取真实IP
+    if 'X-Forwarded-For' in request.headers:
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
+    return request.remote_addr
+
+def limit_remote_address(max_number_in_minute):
+    # 限制每分钟访问次数
+    # 不用 Limiter
+    ip = get_remote_address()
+    if ip in visit_request.keys():
+        return visit_request[ip] >= max_number_in_minute
+    else:
+        visit_request[ip] = 0
+        return False
 
 class user_sessen():
     username: str = ''
@@ -74,7 +92,10 @@ def game_mail(link):
         return '输入的链接错误'
 
 @app.route("/get_my_ip")
-def get_my_ip():
+def get_remote_address():
+    # 当存在X-Forwarded-For时，使用它来获取真实IP
+    if 'X-Forwarded-For' in request.headers:
+        return request.headers.get('X-Forwarded-For').split(',')[0].strip()
     return request.remote_addr
 
 @app.route("/cors_requests" , methods=['POST','GET'])
@@ -87,7 +108,7 @@ def cors_requests():
 
 @app.route("/send_mail/<user>/<pwd>" , methods=['POST'])
 def send_mail(user , pwd):
-
+    limit_remote_address(4)
     r = requests.post(user_server+'/login' , data=user+"\n"+pwd)
     if json.loads(r.text)['message'] == 'login successful.':
         pass
@@ -100,47 +121,13 @@ def send_mail(user , pwd):
 
 @app.route("/bug_search/<check>/<path:website>")
 def bug_search(check , website ):
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] > 2:
-            return 'Too many requests, Max: 2'
-    else:
-        visit_request[client_ip] = 1
 
+    limit_remote_address(3)
     r = requests.post(user_server+'/check_ip_check/'+check)
     if json.loads(r.text)['message'] == 'ok':
         return NiktoScaner.CommandNikto(website)
     else:
         return '验证码错误'
-
-@app.route("/create_db/<user>/<pwd>")
-def create_db(user , pwd):
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] > 5:
-            return 'Too many requests, Max: 5'
-        
-    else:
-        visit_request[client_ip] = 1
-
-    r = requests.post(user_server+'/login' , data=user+"\n"+pwd)
-    if r.text != 'Passwd Or UserName Error!':
-        # 创建目录 /usr/metalite-server/database/<user>/<pwd>
-        if os.path.exists('/usr/metalite-server/database/'+user+'/'+pwd):
-            return 'ok'
-        else:
-            os.makedirs('/usr/metalite-server/database/'+user+'/'+pwd)
-            # 新建文件 /usr/metalite-server/database/<user>/info.jmap
-            # 写入内容 name=root\nmax_size=
-            with open('/usr/metalite-server/database/'+user+'/'+pwd+'/info.jmap' , 'w') as f:
-                f.write('name='+user+'\nmax_size=157286400')
-        return 'ok'
-    else:
-        return '登录错误'
 
 
 @app.route("/ok_game/<user>/<pwd>/<level>")
@@ -186,14 +173,6 @@ def get_game_level(user , pwd):
     
 @app.route('/subdomain/<website>/')
 def subdomain_searcher(website):
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] > 5:
-            return 'Too many requests, Max: 5'
-    else:
-        visit_request[client_ip] = 1
     return dns_searcher.get_subdomain(website=website)
 
 @app.route('/get_ip_location/<ip>' , methods=['POST' , 'GET'])
@@ -203,19 +182,13 @@ def get_ip_location(ip):
 
 @app.route('/dns_search/<website>/')
 def dns_search(website):
+    limit_remote_address(3)
     return dns_searcher.get_dns(website)
 
 @app.route('/sqlmap/' , methods=['POST'])
 def sqlmap_scan():
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] > 2:
-            return 'Too many requests, Max: 2'
-    else:
-        visit_request[client_ip] = 1
 
+    limit_remote_address(3)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     host = json_obj['command_values']
     check = json_obj['check']
@@ -228,15 +201,8 @@ def sqlmap_scan():
 
 @app.route('/nmap/' , methods=['POST'])
 def nmap_scan():
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] > 2:
-            return 'Too many requests, Max: 2'
-    else:
-        visit_request[client_ip] = 1
     
+    limit_remote_address(3)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     host = json_obj['command_values']
     check_code = json_obj['check']
@@ -261,15 +227,8 @@ def whois_show():
         
 @app.route('/create_web_virus/' , methods=['GET','POST'])
 def create_web_virus():
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] >= 6:
-            return 'Too many requests'
-    else:
-        visit_request[client_ip] = 1
 
+    limit_remote_address(5)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     user = json_obj['user']
     pwd = json_obj['pwd']
@@ -292,15 +251,8 @@ def create_web_virus():
     
 @app.route('/create_virus/' , methods=['GET'])
 def create_virus():
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] >= 6:
-            return 'Too many requests'
-    else:
-        visit_request[client_ip] = 1
 
+    limit_remote_address(5)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     user = json_obj['user']
     pwd = json_obj['pwd']
@@ -323,14 +275,6 @@ def create_virus():
 
 @app.route('/qr_code' , methods=['POST'])
 def make_qr_code():
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] >= 9:
-            return 'Too many requests'
-    else:
-        visit_request[client_ip] = 1
         
     data = request.get_data().decode('utf-8').strip()
     img_file = r'qrcode/'+ get_random()+".png"
@@ -350,6 +294,7 @@ def make_qr_code():
 
 @app.route('/get_virus/<file_name>')
 def get_virus(file_name):
+    limit_remote_address(10)
     if "../" in str(file_name) or str(file_name).startswith('/'):
         return 'not allow.'
     return send_file("../virus/"+file_name, as_attachment=True)
@@ -405,14 +350,7 @@ def get_virus_list():
 
 @app.route('/update_virus/<filename>/<check>' , methods=['POST'])
 def update_virus(filename , check):
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] >= 3:
-            return json.dumps({'message': 'Too many requests'})
-    else:
-        visit_request[client_ip] = 1
+
     message = str(json.loads(requests.get(user_server+'/check_ip_check/' + check).text.strip())['message'])
     print(message)
     if str(filename).strip().lower() == "index.html" or str(filename).strip().lower() == "index.htm":
@@ -484,46 +422,11 @@ def web_clone_url(attack_token,url):
     else:
         return 'send message error'
 
-@app.route('/WebClone/<attack_url>/<user>/<pwd>')
-def WebClone(attack_url , user , pwd):
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] >= 6:
-            return 'Too many requests'
-    else:
-        visit_request[client_ip] = 1
-
-    attack_url = str(attack_url).replace('-' , '/')
-
-    r = requests.post(user_server+'/login' , data=user+"\n"+pwd)
-    if r.text != 'Passwd Or UserName Error!':
-        n = get_random()
-        
-        u = user_sessen()
-        u.url = n
-        u.attack_type = 'webclone'
-        u.username = user
-        u.url_clone = attack_url
-
-        url_list[n] = u
-        return n
-
-    else:
-        return 'your message error' 
 
 
 @app.route('/api/<attack_type>/<user>/<pwd>/' , methods=['POST' , 'GET'])
 def attack(attack_type,user,pwd):
-    # 限制每个IP对制定api的访问.
-    client_ip = request.remote_addr
-    if client_ip in visit_request:
-        visit_request[client_ip] = visit_request[client_ip] + 1
-        if visit_request[client_ip] >= 6:
-            return 'Too many requests'
-    else:
-        visit_request[client_ip] = 1
+
 
     r = requests.post(user_server+'/login' , data=user+"\n"+pwd)
     if r.text.lower() != 'login successfull.':
