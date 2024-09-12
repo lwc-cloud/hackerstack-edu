@@ -184,7 +184,7 @@ def get_game_level(user , pwd):
     else:
         return '登录错误'
     
-@app.route('/subdomain/<path:website>')
+@app.route('/subdomain/<website>/')
 def subdomain_searcher(website):
     # 限制每个IP对制定api的访问.
     client_ip = request.remote_addr
@@ -253,9 +253,9 @@ def nmap_scan():
         print(e)
         return json.dumps({"message" : "error"})
 
-@app.route('/whois/')
+@app.route('/whois/' , methods=['POST'])
 def whois_show():
-    website = json.dumps(request.get_data().decode('utf-8'))
+    website = json.loads(request.get_data().decode('utf-8'))['website']
     w = whois.whois(str(website))
     return w
         
