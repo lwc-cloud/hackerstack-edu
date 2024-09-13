@@ -124,31 +124,45 @@ function subdomain_get() {
     }
 }
 
+var allow_print_log = true;
 
 function print_log(log_info , isShowRightAlert) {
-    log_info = "[ "+getTime()+" ] "+log_info;
-    var t = document.getElementById('log_console');
-    var text_1 = log_info
-    var splitText_1 = text_1.split('');
+    
 
-    var run = null;
-    var i = 0;
-    if (isShowRightAlert == undefined) {
-        showRightAlert(log_info , 2000);
+    if (!allow_print_log) {
+        // 加一个类似于锁的东西，防止多次打印日志
+        // 等待上一个日志打完再打印下一个日志
     }
-    run = setInterval(function() {
-        if (i + 1 == text_1.length) {
-            clearInterval(run);
-            return;
+    else {
+        allow_print_log = false;
+        log_info = "[ "+getTime()+" ] "+log_info;
+        var t = document.getElementById('log_console');
+        var text_1 = log_info
+        var splitText_1 = text_1.split('');
+    
+        var run = null;
+        var i = 0;
+        if (isShowRightAlert == undefined) {
+            showRightAlert(log_info , 2000);
         }
-        if (splitText_1[i] == "\n") {
-            t.innerHTML+= "<br />";
-        }else {
-            t.innerHTML+= splitText_1[i];
-        }
-        i++
-    } , 10);
-    t.innerHTML+= "<br />";
+        run = setInterval(function() {
+            if (i + 1 == text_1.length) {
+                t.innerHTML+= splitText_1[i];
+                clearInterval(run);
+                return;
+            }
+            if (splitText_1[i] == "\n") {
+                t.innerHTML+= "<br />";
+            }else {
+                t.innerHTML+= splitText_1[i];
+            }
+            i++
+        } , 10);
+        t.innerHTML+= "<br />";
+        setTimeout(() => {
+            allow_print_log = true;
+        }, 10 * log_info.length + 100);
+    }
 }
 
 function to_social() {

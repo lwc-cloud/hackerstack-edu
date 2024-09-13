@@ -9,6 +9,7 @@
         <link href="../css/system.css" rel="stylesheet" />
         <script src="../js/libui.js"></script>
         <script src="../js/system.js"></script>
+        <script src="../js/hacker_driver.js"></script>
     </head>
     <body style="height: 100%;padding: 0px;margin: 0px;overflow-y: hidden;overflow-x: hidden;">
         <script>
@@ -72,7 +73,7 @@
                 </iframe>
                 <span class="card_2" style="height: calc(32vh + 7px);left: calc(15% + 50px);top: calc(60vh + 60px);color: #00FF00;">
                     <h2 style="margin: 0px;font-size: 20px;width: 100%;height: auto;background-color: #00FF00;color: black;">本地驱动渗透测试功能</h2>
-                    <div id="local_hacker_tools" style="padding: 10px;">
+                    <div id="local_fn" style="padding: 10px;">
                         <p>等待连接本地驱动 ... ...</p>
                     </div>
                 </span>
@@ -82,9 +83,9 @@
                         <div style="padding: 5px;">
                             <button class="btn_2">下载黑客驱动</button>
                             <br />
-                            <input class="in_1" placeholder="连接驱动，默认 http://127.0.0.1:8080" value="http://127.0.0.1:8080" />
-                            <input class="in_1" placeholder="驱动密码" />
-                            <button class="btn_2" style="margin-top: 170px;" onclick="connect_driver()">连接</button>
+                            <p id="driver_code">识别码: </p>
+                            <p id="driver_ip">IP: </p>
+                            <p id="driver_os">系统: </p>
                         </div>
                     </div>
                     <h3 style="width: 100%;height: auto;background-color: #00FF00;color: black;margin: 0px;">日志控制台</h3>
