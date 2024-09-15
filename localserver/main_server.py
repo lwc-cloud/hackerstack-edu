@@ -75,10 +75,14 @@ def input_console():
 
 def deal_command(command):
     command = str(command).strip()
+
+    def send_ok():
+        requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
+
     if command == '' or command == 'none':
         return
     else:
-        requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
+        threading.Thread(target=send_ok).start()
         print("[INFO] 收到命令: "+command)
         # requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
         if command == 'quit':
@@ -113,7 +117,7 @@ if __name__ == '__main__':
             except BaseException as e:
                 target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":e}))
             command = 'none'
-            time.sleep(1)
+            time.sleep(0.4)
         # r = requests.get(api_server+"/virus_clear_command/"+driver_code)
     except:
         exit()

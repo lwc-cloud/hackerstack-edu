@@ -6,17 +6,21 @@ result = []
 def scan_directory(url):
     try:
         response = requests.get(url)
-        if response.status_code == 200 or response.status_code == 403 or response.status_code == 405:
-            print(f"[+] Scanning - {url}")
-            result.append (f"[+] Found - {url}")
+
+        if response.status_code != 404 and response.status_code != 400:
+            print(f"[+] [{response.status_code}] Scanning - {url}")
+            result.append (f"[+] [{response.status_code}] Scanning - {url}")
     except requests.exceptions.RequestException as e:
         print(f"[-] Error - {e}")
+        result.append (f"[+] [{response.status_code}] Scanning - {url}")
 
 def main(target_url):
     wordlist = open("./hackerstack_driver/dic.txt", "r").readlines()
+    j = 0
     with ThreadPoolExecutor(max_workers=2000) as executor:
-        for dir in wordlist:
-            executor.submit(scan_directory, f"{target_url}/{dir}")
+        for dir in wordlist:  
+            #print(j) 
+            executor.submit(scan_directory, f"{target_url}{dir}")
 
         executor.shutdown(wait=True)
 
