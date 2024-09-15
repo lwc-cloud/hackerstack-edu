@@ -467,7 +467,7 @@ function nmap_attack() {
     xhr.send(JSON.stringify({"command_values":host,"check":check_code}));
     xhr.onload = function() {
         var console = document.getElementById('console');
-        console.innerHTML = JSON.parse(xhr.responseText)['message'].replaceAll('\\n' , '<br />');
+        console.innerHTML = JSON.parse(xhr.responseText)['message'].replaceAll('\n' , '<br />');
         var img = document.getElementById('check_img')
         img.src="https://user.hackerstack.top/get_check_code"
     }
