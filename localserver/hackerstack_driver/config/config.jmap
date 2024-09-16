@@ -1,0 +1,4 @@
+default_thread=15000
+fast=false
+version=1.0
+dict=dict/passwd_1.txt
