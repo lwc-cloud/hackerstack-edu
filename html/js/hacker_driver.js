@@ -23,6 +23,16 @@ function send_command(cmd) {
     }
 }
 
+function deal_ssh_brute() {
+    showInputBox("输入参数","" , "输入目标IP:",function(ip){
+        showInputBox("输入参数","" , "输入端口:",function(port){
+            showInputBox("输入参数","" , "输入用户名:",function(user){
+                send_command("ssh_brute "+ip+" "+port+" "+user);
+            });
+        });
+    });
+}
+
 var hacker_driver_xhr = new XMLHttpRequest();
 hacker_driver_xhr.open("GET", remote+ "/api/web_virus/"+user+"/"+pwd, true);
 hacker_driver_xhr.send();
@@ -68,11 +78,19 @@ hacker_driver_xhr.onload = function() {
                 dom.onclick = function() {
                     if (dom.id == 'dirb'){
                         showInputBox("输入参数","dirb" , "输入关于目标网站:", send_command);
+                        return;
+                    }
+                    else if (dom.id == 'ssh_brute') {
+                        deal_ssh_brute();
+                        return;
                     }
                 }
             }) (i) ;}
         }}
         else {
+            if (String(r) == '') {
+                return;
+            }
             showAlert_Console(r , null , function() {
                 command = 'none';
             })

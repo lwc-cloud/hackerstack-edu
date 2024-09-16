@@ -62,6 +62,11 @@ function login_ok(to_system , showAlert) {
                 setCookie("user" , username);
                 setCookie("pwd" , password);
                 
+                if (json['server'] == false) {
+                    showAlert("VIP期限已到，请重新订阅" , null)
+                    return false;
+                }
+
                 var login_btn = document.getElementById('login');
                 login_btn.innerText = "登录: "+username;
                 login_btn.onclick = function() {

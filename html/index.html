@@ -153,7 +153,12 @@
         function to_system() {
             login_ok(to_system_window , showAlert);
         }
-        
+        function to_doc() {
+          login_ok(function() {
+            window.location.href='./edu/edu.pdf'
+          } , showAlert);
+        }
+
     </script>
     <iframe src="./bg.html" style="width: 100%;height: 100%;position: absolute;bottom: 0px;top: 0px;border: none;"></iframe>
 <div style="position: absolute;top: 0;bottom: 0;width: 100%;overflow-y: scroll;overflow-x: hidden;">
@@ -204,7 +209,7 @@
             <h3>病毒库</h3>
             <p>允许下载和上传木马病毒<br />也可以使用该木马病毒库</p>
           </div>
-          <div align="center" class="div-button" onclick="window.location.href='./edu/edu.pdf'">
+          <div align="center" class="div-button" onclick="to_doc()">
             <h3>抽象的兴趣导向教材</h3>
             <p>我们的网安学校教材以抽象著称<br />完全摈弃传统学习</p>
           </div>

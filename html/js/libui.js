@@ -271,7 +271,7 @@ function showInputBox(title,cmd_type, message, callback) {
     button.style.marginLeft = '10px';
     button.innerText = '确定';
     button.addEventListener('click', function() {
-        callback("dirb "+input.value);
+        callback(cmd_type+input.value);
         document.body.removeChild(div);
     });
     inputDiv.appendChild(button);
