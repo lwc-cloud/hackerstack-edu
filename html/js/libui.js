@@ -14,7 +14,7 @@ function showAlert(message, waitTime) {
     div.style.margin = '200px auto';
     div.style.maxWidth = '600px';
     div.style.overflow = 'auto';
-    div.style.height = '300px'
+    div.style.height = '350px'
     div.style.border = '3px solid #00FF00'
 
     var title = document.createElement('p');
@@ -29,8 +29,12 @@ function showAlert(message, waitTime) {
 
     var messageDiv = document.createElement('div');
     messageDiv.innerText = message;
-    messageDiv.style.marginTop = '20px';
+    messageDiv.style.marginTop = '0px';
     messageDiv.style.padding = '10px';
+    messageDiv.style.width = "calc(100% - 20px)";
+    messageDiv.style.height = "calc(100% - 120px)";
+    messageDiv.style.overflowY = "scroll";
+    messageDiv.style.overflowX = "hidden";
     messageDiv.innerHTML = message;
 
     div.appendChild(messageDiv);

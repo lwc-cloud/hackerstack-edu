@@ -14,6 +14,48 @@
     <body style="height: 100%;padding: 0px;margin: 0px;overflow-y: hidden;overflow-x: hidden;">
         <script>
 
+function login_ok(to_system , showAlert) {
+    var get_result = false;
+    try {
+        var username = getCookie("user");
+        var password = getCookie("pwd");
+        if (username == "" || password == "") {
+            showRightAlert("请先登录" , 3000)
+        }
+        else {
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST" , "https://user.hackerstack.top/api/v2/login",true);
+            xhr.send(JSON.stringify({"user":username,"pwd":password}));
+            
+            xhr.onload=function() {
+            // 返回的是 Json字符串，自己去处理,默认的信息是 {"message":"login successful."}
+            var json_content = xhr.responseText;
+            console.log(json_content);
+            var json = JSON.parse(json_content);
+            if (json["message"] == "login successful.") {
+                setCookie("user" , username);
+                setCookie("pwd" , password);
+                
+                if (json['server'] == false) {
+                    showAlert("VIP期限已到，请重新订阅" , null)
+                    return false;
+                }
+                else {
+                    to_system();
+                    get_result = true;
+                }
+            }
+            }
+        }
+        return get_result;
+    }catch (e) {
+        showAlert("请先登录" , null)
+        return get_result;
+    }
+}
+
+
             function load_js(path) {
                 var script = document.createElement('script');
                 script.src = path;
@@ -67,11 +109,18 @@
                         <button class="btn_2"onclick="document.getElementById('page').src='./bug/'">Nikto漏洞扫描</button>
                     </div>
                 </span>
+                <script>
+                    function to_doc() {
+                        login_ok(function() {
+                            window.location.href='../edu/edu.pdf'
+                        } , showAlert);
+                    }
+                </script>
                 <span class="card_2" style="height: 30px;background-color: #00FF00;left: calc(15% + 50px);color: #00FF00;">
-                    <button class="top_btn_1">刷新</button>
-                    <button class="top_btn_1" onclick="to_setting()">设置</button>
-                    <button class="top_btn_1" onclick="to_setting()">教材</button>
-                    <button class="top_btn_1" onclick="to_setting()">实战演示</button>
+                    <button class="top_btn_1" onclick="document.getElementById('page').src='./default.html'">首页</button>
+                    <button class="top_btn_1" onclick="window.open('../attack_tools.html')">本地渗透软件</button>
+                    <button class="top_btn_1" onclick="to_doc()">教材</button>
+                    <button class="top_btn_1" onclick="alert('分免费版本和付费版本，免费的咨询就是咨询网络安全小问题以及部分技巧，付费咨询主要是如何学习以及推荐人脉等的资源，请联系QQ：2382546858')">付费咨询</button>
                 </span>
                 <iframe style="color: #00FF00;top: 30px;left: calc(15% + 50px);" id="page" src="./default.html" class="card_2">
                     
