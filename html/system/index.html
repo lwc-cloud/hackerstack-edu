@@ -106,7 +106,8 @@ function login_ok(to_system , showAlert) {
                         <button class="btn_2" onclick="to_js_console()">Js控制台</button>
                         <button class="btn_2" onclick="to_dns_search()">网站DNS查询(绕防火墙专用)</button>
                         <button class="btn_2" onclick="to_subdomain()">子域名收集</button>
-                        <button class="btn_2"onclick="document.getElementById('page').src='./bug/'">Nikto漏洞扫描</button>
+                        <button class="btn_2" onclick="document.getElementById('page').src='./bug/'">Nikto漏洞扫描</button>
+                        <button class="btn_2" onclick="document.getElementById('page').src='./mirrors/'">镜像网站大全</button>
                     </div>
                 </span>
                 <script>
@@ -144,7 +145,7 @@ function login_ok(to_system , showAlert) {
                     <div style="width: 100%;height: 40vh;margin: 1vh;border-bottom: 3px solid #00FF00;margin: 0px;">
                         <h3 style="width: 100%;height: auto;background-color: #00FF00;color: black;margin: 0px;">连接本地驱动</h3>
                         <div style="padding: 5px;">
-                            <button class="btn_2">下载黑客驱动</button>
+                            <button class="btn_2" onclick="window.location.href='https://api.hackerstack.top/resource/hackerstack_driver.zip'">下载黑客驱动</button>
                             <br />
                             <p id="driver_code">识别码: </p>
                             <p id="driver_ip">IP: </p>

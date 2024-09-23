@@ -10,7 +10,7 @@
         <script src="./js//cookie.js"></script>
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
         <script src="./js/libui.js"></script>
-        <script src="./js/login.js"></script>
+        <script src="./js/bind.js"></script>
         <script src="./js/md5.js"></script> 
     </head>
     <body>
@@ -19,19 +19,20 @@
         padding: 0px;border-radius: 15px;" >
             <div class="panel">
                 <div align="left">
-                    <h3>LinwinSoft账户登录</h3>
+                    <h3>LinwinSoft账户邮箱绑定</h3>
                 </div>
                 <br />
                 <input class="in" placeholder="登录用户/邮箱" id="user" type="text" />
                 <input class="in" placeholder="登录密码" id="pwd" type="password" />
-            
+                <input class="in" placeholder="邮箱" id="email" type="text" />
+                <input class="in" placeholder="验证码" style="width: calc(100% - 120px);" id="check" type="text" />
+                <button style="width: calc(80px);height: 40px;background-color: rgba(0, 0, 0, 0.678);backdrop-filter: blur(5px);border-radius: 10px;color: white;border: none;" id="send_code" onclick="send_mail();">发送验证码</button>
                 <br />
                 <br />
-                <a style="float: left;margin-left: 20px;color: rgb(7, 179, 7);" target="_blank" href="https://user.hackerstack.top/api/v2/user_reg_page">没有账户? 注册</a>
-                <a style="float: right;margin-right: 20px;color: rgb(7, 179, 7);" href="./mail_login.html">邮件登录</a>
+                <a style="float: left;margin-left: 20px;" target="_blank" href="https://user.hackerstack.top/api/v2/user_reg_page">没有账户? 注册</a>
                 <br />
                 <br />
-                <button class="btn" onclick="login()">登录</button>
+                <button class="btn" onclick="bind_mail()">绑定</button>
                 <p id="wait" style="display: none;color: red;">等待服务器回复......</p>
             </div>
         </div>  

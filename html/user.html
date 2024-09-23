@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <script src="./js/cookie.js"></script>
         <link href="./css/index.css" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Hacker Stack - 在线渗透测试平台</title>
@@ -20,12 +21,19 @@
         <style>
                 .btn_key {
     width: 45%;
-    height: 40px;
+    height: 100px;
     background-color: rgba(0, 0, 0, 0.555);
-    border: 1px solid green;
-    color: green;
-    margin-left: 5px;
-    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    backdrop-filter: blur(10px);
+    color: rgb(7, 179, 7);
+    margin-left: -5px;
+    margin-top: -5px;
+    font-size: 20px;
+    }
+    .btn_key:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+        cursor: pointer;
     }
         </style>
     </head>
@@ -42,8 +50,8 @@
             <button class="top_btn" onclick="window.location.href='./agreement'">使用协议</button>
         </div>
         <iframe style="position: absolute;width: 100%;height: 100%;top: 50px;border: none;" src="./bg.html"></iframe>
-        <div align="left" style="font-style: italic;color: rgb(7, 179, 7);width: 100%;;position: absolute;  /* 顶部偏移为父元素高度的一半 */
-        padding: 50px;border-radius: 15px;" id="dom">
+        <div align="center" style="font-style: italic;color: rgb(7, 179, 7);width: 100%;;position: absolute;  /* 顶部偏移为父元素高度的一半 */
+        padding: 10px;border-radius: 15px;" id="dom">
             <h1 style="color: rgb(7, 179, 7);">LinwinSoft账户</h1>
         <p id="t" style="display: none;"></p>
         <br />
@@ -52,52 +60,81 @@
 function auto_login() {
 
 try{
-    var json = JSON.parse(document.cookie);
-    var username =  json.user;
-    var password = json.pwd;
+    var username =  getCookie("user");
+    var password = getCookie("pwd");
+    console.log(username , password)
     
     var xhr = new XMLHttpRequest();
-    xhr.open("POST" , "http://user.hackerstack.top/login",false);
-    xhr.send(username+"\n"+password);
+    xhr.open("POST" , remote+"/api/v2/login",false);
+    xhr.send(JSON.stringify({"user":username,"pwd":password}));
     
     // 返回的是 Json字符串，自己去处理,默认的信息是 {"message":"login successful."}
     var json_content = xhr.responseText;
     var json = JSON.parse(json_content);
-    if (String(json.message).toLowerCase().includes("login successful.")) {
-        document.cookie = "{\"user\" : \""+username+"\" , \"pwd\" : \""+password+"\"}";
+    if (json["message"] == "login successful.") {
+        showRightAlert("欢迎回来，"+username , 3000)
+        setCookie("user" , username , 7);
+        setCookie("pwd" , password , 7);
         
         var login_btn = document.getElementById('login');
         login_btn.innerText = "登录: "+username;
         login_btn.onclick = function() {
             window.location.href = "./user.html";
         }
+        var top = document.getElementById('top');
+        var exit_login = document.createElement('a');
+        exit_login.onclick=function() {
+            setCookie("user","None");
+            setCookie("pwd","None")
+            window.location.href=''
+        }
+        exit_login.innerText = '退出登录'
+        top.appendChild(exit_login);
+        document.getElementById('default_login').style.display = 'none'
         return true;
     } else {
+        showRightAlert("还未登录，请先登录" , 3000)
         return false; 
     }
 } catch(e) {
-    document.cookie = '';
-    document.cookie = "{\"user\" : \"\" , \"pwd\" : \"\"}";
     return false;
 }
 }
     auto_login()
 
         var xhr = new XMLHttpRequest();
-        var json = JSON.parse(document.cookie);
-        xhr.open("GET" , "http://user.hackerstack.top/user/"+json.user+"/"+json.pwd , false);
+        xhr.open("GET" , "http://user.hackerstack.top/user/"+getCookie("user")+"/"+getCookie("pwd") , false);
         xhr.send();
         var obj_json = JSON.parse(xhr.responseText);
+        console.log(obj_json)
         var d = document.getElementById('dom')
         for (var key in obj_json) {
             var btn_1 = document.createElement('button');
             var btn_2 = document.createElement('button');
-            btn_1.innerText = key;
+            if (key == 'about') {
+                btn_1.innerText = '简介';
+            }
+            else if (key == 'edu_vip') {
+                btn_1.innerText = '会员到期';
+            }
+            else if (key == 'mail') {
+                btn_1.innerText = '邮箱';
+            }
+            else {
+                btn_1.innerText = key;
+            }
 
             btn_1.className = 'btn_key';
             btn_2.className = 'btn_key';
-
-            btn_2.innerText = obj_json[key];
+            console.log(key, obj_json[key])
+            if (obj_json[key] == null) {
+                btn_2.innerText = '点击绑定邮箱';
+                btn_2.onclick = function() {
+                    window.location.href = "./bind_mail.html";
+                }
+            }else {
+                btn_2.innerText = obj_json[key];
+            }
             d.appendChild(btn_1)
             d.appendChild(btn_2)
         }
