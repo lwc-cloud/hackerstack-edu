@@ -224,12 +224,31 @@ def init_driver():
 
     if os.name == 'posix':
         if os.getlogin() == 'root' or sys.argv[0].find('sudo') != -1:
-            print("[ERROR] 请以root权限运行")
+            print("[ERROR] 请以root权限运行,可以在命令前加sudo")
             exit()
+
+    if os.name == 'nt':
+        # 检查是否以管理员权限运行
+        import ctypes
+        if not ctypes.windll.shell32.IsUserAnAdmin():
+            # 尝试以管理员权限运行
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
+        else:
+            print("[INFO] 已以管理员权限运行")
 
     if os.path.isdir("./hackerstack_driver") == False:
         os.mkdir("./hackerstack_driver")
-        
+        print("[INFO] 正在下载驱动程序附加组件...")
+        requests_data = requests.get("https://api.hackerstack.top/resource/hackerstack_driver.zip").content
+        print("[INFO] 下载完成，正在解压...")
+        with open("./hackerstack_driver.zip", "wb") as f:
+            f.write(requests_data)
+        with zipfile.ZipFile("./hackerstack_driver.zip", "r") as zip_ref:
+            zip_ref.extractall("./hackerstack_driver")
+        os.remove("./hackerstack_driver.zip")
+        print("[INFO] 解压完成")
+    
+
     print("[INFO] 完成驱动程序附加组件初始化，不保证驱动程序的完整性")
 
 
