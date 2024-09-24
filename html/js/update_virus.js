@@ -1,7 +1,7 @@
 
 
-var api_server = "http://localhost:5555";
-//var remote = "https://api.hackerstack.top";
+//var api_server = "http://localhost:5555";
+var remote = "https://api.hackerstack.top";
 
 function update_to_server(contents , filename , check) {
     try{
