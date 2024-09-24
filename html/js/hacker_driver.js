@@ -159,5 +159,5 @@ hacker_driver_xhr.onload = function() {
     }catch(e){
         return;
     }
-    } , 1000);
+    } , 800);
 }
