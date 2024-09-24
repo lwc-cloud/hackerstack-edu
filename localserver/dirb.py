@@ -17,10 +17,11 @@ def scan_directory(url):
 def main(target_url):
     wordlist = open("./hackerstack_driver/dic.txt", "r").readlines()
     j = 0
+    f = None
     with ThreadPoolExecutor(max_workers=2000) as executor:
         for dir in wordlist:  
             #print(j) 
-            executor.submit(scan_directory, f"{target_url}{dir}")
+            f = executor.submit(scan_directory, f"{target_url}{dir}")
 
         executor.shutdown(wait=True)
 

