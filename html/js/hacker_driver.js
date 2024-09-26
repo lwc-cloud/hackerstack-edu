@@ -148,7 +148,7 @@ hacker_driver_xhr.onload = function() {
             }) (i) ;}
         }}
         else {
-            if (String(r) == '') {
+            if (String(r).length === 0 || String(r) == '') {
                 return;
             }
             showAlert_Console(r , null , function() {

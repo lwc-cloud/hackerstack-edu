@@ -584,3 +584,20 @@ function bug_attack() {
         img.src="https://user.hackerstack.top/get_check_code"
     }
 }
+
+
+function dirb_attack() {
+    var check_code = document.getElementById('check_code').value;
+    var host = document.getElementById('host').value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST' , remote+'/dirb/' , true);
+    showAlert('dirb扫描确实比较慢，请耐心等候扫描结果' , 3000)
+    
+    xhr.send(JSON.stringify({"command_values":host,"check":check_code}));
+    xhr.onload = function() {
+        var console = document.getElementById('console');
+        console.innerHTML = JSON.parse(xhr.responseText)['message'].replaceAll('\n' , '<br />');
+        var img = document.getElementById('check_img')
+        img.src="https://user.hackerstack.top/get_check_code"
+    }
+}
