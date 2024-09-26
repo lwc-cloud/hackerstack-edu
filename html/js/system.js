@@ -102,7 +102,7 @@ function subdomain_get() {
         return
     }
 
-    xhr.open('GET' , remote + '/subdomain/'+domain , true);
+    xhr.open('GET' , remote + '/subdomain/'+domain+"/" , true);
     xhr.send();
     xhr.onload = function() {
         console.innerHTML = '<p>搜索结果: </p>';
