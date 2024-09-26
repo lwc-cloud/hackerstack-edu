@@ -26,6 +26,7 @@ import SqlMapScaner as SqlMapScaner
 import dns_searcher as dns_searcher
 import NiktoScaner as NiktoScaner
 import the_matrix as matrix
+import Dirb as Dirb
 
 
 
@@ -218,6 +219,28 @@ def nmap_scan():
     except BaseException as e:
         print(e)
         return json.dumps({"message" : "error"})
+
+@app.route('/dirb/' , methods=['POST'])
+def nmap_scan():
+    
+    limit_remote_address(3)
+    json_obj = json.loads(request.get_data().decode('utf-8'))
+    host = json_obj['command_values']
+    check_code = json_obj['check']
+
+    try:
+        if host == '127.0.0.1' or host == '0.0.0.0':
+            return json.dumps({'message': 'error'})
+        r = requests.post(user_server+'/check_ip_check/'+check_code)
+        if json.loads(r.text)['message'] == 'ok':
+            return json.dumps({"message" : Dirb.CommandDirb(host)})
+        else:
+            return json.dumps({"message" : "验证码错误"})
+    except BaseException as e:
+        print(e)
+        return json.dumps({"message" : "error"})
+
+
 
 @app.route('/whois/' , methods=['POST'])
 def whois_show():
