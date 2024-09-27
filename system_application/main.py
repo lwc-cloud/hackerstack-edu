@@ -221,7 +221,7 @@ def nmap_scan():
         return json.dumps({"message" : "error"})
 
 @app.route('/dirb/' , methods=['POST'])
-def nmap_scan():
+def dirb_scan():
     
     limit_remote_address(3)
     json_obj = json.loads(request.get_data().decode('utf-8'))
