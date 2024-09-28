@@ -124,7 +124,7 @@ def send_mail(user , pwd):
 def bug_search(check , website ):
 
     limit_remote_address(3)
-    r = requests.post(user_server+'/check_ip_check/'+check)
+    r = requests.post(user_server+'/check_ip_check/'+check+"/"+get_remote_address())
     if json.loads(r.text)['message'] == 'ok':
         return NiktoScaner.CommandNikto(website)
     else:
@@ -194,7 +194,7 @@ def sqlmap_scan():
     host = json_obj['command_values']
     check = json_obj['check']
 
-    r = requests.post(user_server+'/check_ip_check/'+check)
+    r = requests.post(user_server+'/check_ip_check/'+check+"/"+get_remote_address())
     if json.loads(r.text)['message'] == 'ok':
         return json.dumps({"message" : SqlMapScaner.CommandSqlMap(host)})
     else:
@@ -211,7 +211,8 @@ def nmap_scan():
     try:
         if host == '127.0.0.1' or host == '0.0.0.0':
             return json.dumps({'message': 'error'})
-        r = requests.post(user_server+'/check_ip_check/'+check_code)
+        print(check_code+" "+get_remote_address())
+        r = requests.post(user_server+'/check_ip_check/'+check_code+"/"+get_remote_address())
         if json.loads(r.text)['message'] == 'ok':
             return json.dumps({"message" : NmapScaner.CommandNmap(host)})
         else:
@@ -231,11 +232,9 @@ def dirb_scan():
     try:
         if host == '127.0.0.1' or host == '0.0.0.0':
             return json.dumps({'message': 'error'})
-        r = requests.post(user_server+'/check_ip_check/'+check_code)
-        if json.loads(r.text)['message'] == 'ok':
-            return json.dumps({"message" : Dirb.CommandDirb(host)})
         else:
-            return json.dumps({"message" : "验证码错误"})
+            scan = requests.post(user_server+"/attack/dirb/",data=json.dumps({"host":host,"check_code":check_code})).text.strip()
+            return json.dumps({"message" : scan})
     except BaseException as e:
         print(e)
         return json.dumps({"message" : "error"})
@@ -374,7 +373,7 @@ def get_virus_list():
 @app.route('/update_virus/<filename>/<check>' , methods=['POST'])
 def update_virus(filename , check):
 
-    message = str(json.loads(requests.get(user_server+'/check_ip_check/' + check).text.strip())['message'])
+    message = str(json.loads(requests.get(user_server+'/check_ip_check/' + check+"/"+get_remote_address()).text.strip())['message'])
     print(message)
     if str(filename).strip().lower() == "index.html" or str(filename).strip().lower() == "index.htm":
         return json.dumps({'message': 'not allow.'})
