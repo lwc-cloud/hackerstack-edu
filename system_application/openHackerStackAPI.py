@@ -152,4 +152,4 @@ class OpenHackerStackAPI:
 
 # 用户名 linux 密码 linux 是特权账号，有的教育版设置续费到了2099年的
 api = OpenHackerStackAPI("linux", "linux")
-print(api.website_dir_scan("http://micro-wave.cc:1145"))
+print(api.website_dir_scan("https://edu.hackerstack.top/"))
