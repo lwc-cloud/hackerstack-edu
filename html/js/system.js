@@ -60,10 +60,28 @@ function getCookie(name) {
     return null;
 }
 
+function getURLValue(name) {
+    var url = window.location.href.substring(window.location.href.indexOf('?') + 1);
+    var split_url = url.split('&');
+    for (var i in split_url) {
+        var item = split_url[i].split('=');
+        if (item[0] == name) {
+            return item[1];
+        }
+    }
+    return null;
+}
 
 
 var user = getCookie('user');
 var pwd = getCookie('pwd');
+
+if (user == null || pwd == null) {
+    user = getURLValue('user');
+    pwd = getURLValue('pwd');
+
+    console.log(user, pwd)
+}
 
 
 function getTime() {
@@ -88,6 +106,32 @@ function load_page(path , dom) {
 function to_subdomain() {
     var i = document.getElementById('page');
     i.src = './subdomain/index.html'
+}
+
+function ICP_Search() {
+    var domain = document.getElementById('domain').value;
+    var console = document.getElementById('console');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET' , remote + '/icp/'+domain+"/" , true);
+    xhr.send();
+    xhr.onload = function() {
+        console.innerHTML = '<p>搜索结果: </p>';
+        try {
+            var json = JSON.parse(xhr.responseText);
+            for (var i in json) {
+                (function(i) {
+                    var btn = document.createElement('button');
+                    btn.innerText = json[i];
+                    console.appendChild(btn);
+                    btn.onclick=function() {
+                        window.open('//'+json[i]);
+                    }
+                }) (i)
+            }
+        }catch(e) {
+            showAlert(xhr.responseText , null);
+        }
+    }
 }
 
 function subdomain_get() {

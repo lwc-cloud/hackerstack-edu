@@ -93,6 +93,7 @@ hacker_driver_xhr.onload = function() {
         command = 'none';
         get_message.onload = function() {
         var r = get_message.responseText;
+        //console.log(r);
         if (r.replace('\n','') != 'none'){
             document.getElementById("local_console").style.display = "block";
             document.getElementById("local_console_content").innerHTML = String(r).replaceAll("\n","<br />");
